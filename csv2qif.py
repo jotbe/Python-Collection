@@ -16,7 +16,7 @@
 # - FIXME: Only date (D), payee (P) and amount (U, T) are currently supported
 # - FIXME: Only german date format supported
 # - TODO: Support CLI arguments
-# - TODO: Use functions and classes
+# - TODO: Code refactoring
 #
 # Author: Jan Beilicke <dev@jotbe-fx.de>
 # Date created: 2011-03-20
@@ -47,7 +47,7 @@ csvReader = csv.reader(open(inputFile,'r'), delimiter=delim, quotechar=quoteChar
 ''' Default format for QIF:
 
 !Type:Bank
-Ddd.mm'YYYY
+Dmm.dd'YYYY
 U-123.45
 T-123.45
 PPayee

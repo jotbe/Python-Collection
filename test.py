@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# Just a simple test script
 import re
 
 #print '\nPattern matching:'

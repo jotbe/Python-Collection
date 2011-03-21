@@ -99,7 +99,6 @@ for row in csvReader:
 
 	# Create qif entry
 	entry = qifTpl.format(date = date, amount = row[qAmount], payee = row[qPayee])
-	print entry
 	qifWriter.write(entry)
 
 qifWriter.close()

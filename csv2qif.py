@@ -5,6 +5,9 @@
 # This script will take a delimiter-separated list
 # and converts it to Quicken Interchange Format (QIF).
 #
+# Author: Jan Beilicke <dev@jotbe-fx.de>
+# Date created: 2011-03-20
+#
 # == Use case == 
 #
 # Export a bank statement as CSV, convert it to QIF
@@ -19,8 +22,27 @@
 # - TODO: Support CLI arguments
 # - TODO: Code refactoring
 #
-# Author: Jan Beilicke <dev@jotbe-fx.de>
-# Date created: 2011-03-20
+# == QIF Format ==
+# 
+# !Type:Bank
+# Dmm.dd'YYYY
+# U-123.45
+# T-123.45
+# PPayee
+# ^
+# Ddd.mm'YYYY
+# U-456.78
+# T-456.78
+# PPayee
+# ^
+# 
+# Note the caret (^) at the end of each entry
+# 
+# For explanation see:
+# http://en.wikipedia.org/wiki/Quicken_Interchange_Format
+# 
+# More in-depth information:
+# http://svn.gnucash.org/trac/browser/gnucash/trunk/src/import-export/qif-import/file-format.txt
 #
 
 import csv
@@ -34,58 +56,40 @@ skipLines = 1
 delim = ';'
 # Quote character
 quoteChar = '"'
-# Column key (int) for the qif date
+# QIF account name
+qAccName = 'Girokonto'
+# QIF account type
+qAccType = 'Cash'
+# Column key (int) for the QIF date
 qDate = 1
-# Column key (int) for the qif payee
+# Column key (int) for the QIF payee
 qPayee = 3
-# Column key (int) for the qif amount
+# Column key (int) for the QIF amount
 qAmount = 19
-# Qif output
+# QIF output
 outputFile = 'statements.qif'
-
-csvReader = csv.reader(open(inputFile,'r'), delimiter=delim, quotechar=quoteChar)
-
-''' Default format for QIF:
-
+# QIF header
+qifHdr = '''
 !Type:Bank
-Dmm.dd'YYYY
-U-123.45
-T-123.45
-PPayee
-^
-Ddd.mm'YYYY
-U-456.78
-T-456.78
-PPayee
-^
-
-Note the caret (^) at the end of each entry
-
-For explanation see:
-http://en.wikipedia.org/wiki/Quicken_Interchange_Format
-
-More in-depth information:
-http://svn.gnucash.org/trac/browser/gnucash/trunk/src/import-export/qif-import/file-format.txt
-
+!Account
+N{accname}
+T{acctype}
 '''
-
+# QIF template
 qifTpl = '''D{date}
 U{amount}
 T{amount}
 P{payee}
 ^'''
 
+csvReader = csv.reader(open(inputFile, 'r'), delimiter = delim, quotechar = quoteChar)
 qifWriter = open(outputFile, 'w')
 
 # Write header
-qifWriter.write('''
-!Type:Bank
-''')
+qifWriter.write(qifHdr.format(accname = qAccName, acctype = qAccType))
 
-i = 0
 for row in csvReader:
-	i += 1
-	if i <= skipLines:
+	if csvReader.line_num <= skipLines:
 		continue
 	
 	# Convert date
@@ -93,7 +97,9 @@ for row in csvReader:
 	d = datetime.date(int(d[2]), int(d[1]), int(d[0]))
 	date = d.strftime('%m.%d\'%Y')
 
+	# Create qif entry
 	entry = qifTpl.format(date = date, amount = row[qAmount], payee = row[qPayee])
+	print entry
 	qifWriter.write(entry)
 
 qifWriter.close()

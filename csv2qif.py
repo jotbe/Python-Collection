@@ -17,6 +17,7 @@
 # == Caveats and Todos ==
 # 
 # - FIXME: Only date (D), payee (P) and amount (U, T) are currently supported
+# - FIXED: Convert german number format to float
 # - FIXME: Only german date format supported
 # - TODO: Support ISO 8859-15 input/output
 # - TODO: Support CLI arguments
@@ -56,6 +57,11 @@ skipLines = 1
 delim = ';'
 # Quote character
 quoteChar = '"'
+# Decimal separator
+# For input we will not rely on any locales
+decDelim = ','
+# Thousands separator
+thousandsSep = '.'
 # QIF account name
 qAccName = 'Girokonto'
 # QIF account type
@@ -82,6 +88,12 @@ T{amount}
 P{payee}
 ^'''
 
+print '''
+Input: %(in)s
+Output: %(out)s
+
+-> Converting to QIF''' % {'in': inputFile, 'out': outputFile}
+
 csvReader = csv.reader(open(inputFile, 'r'), delimiter = delim, quotechar = quoteChar)
 qifWriter = open(outputFile, 'w')
 
@@ -96,9 +108,14 @@ for row in csvReader:
 	d = row[qDate].split('.')
 	d = datetime.date(int(d[2]), int(d[1]), int(d[0]))
 	date = d.strftime('%m.%d\'%Y')
-
+	
+	# Convert amount to float (take care to return a float always)
+	amount = float(row[qAmount].replace(thousandsSep, '').replace(decDelim, '.'))
+	
 	# Create qif entry
-	entry = qifTpl.format(date = date, amount = row[qAmount], payee = row[qPayee])
+	entry = qifTpl.format(date = date, amount = amount, payee = row[qPayee])
 	qifWriter.write(entry)
 
 qifWriter.close()
+
+print 'Done.'

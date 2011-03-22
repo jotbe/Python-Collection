@@ -77,16 +77,14 @@ outputFile = 'statements.qif'
 # QIF header
 qifHdr = '''
 !Type:Bank
-!Account
-N{accname}
-T{acctype}
 '''
 # QIF template
 qifTpl = '''D{date}
 U{amount}
 T{amount}
 P{payee}
-^'''
+^
+'''
 
 print '''
 Input: %(in)s

@@ -75,8 +75,7 @@ qAmount = 19
 # QIF output
 outputFile = 'statements.qif'
 # QIF header
-qifHdr = '''
-!Type:Bank
+qifHdr = '''!Type:Bank
 '''
 # QIF template
 qifTpl = '''D{date}

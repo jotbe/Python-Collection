@@ -17,7 +17,6 @@
 # == Caveats and Todos ==
 # 
 # - FIXME: Only date (D), payee (P) and amount (U, T) are currently supported
-# - FIXED: Convert german number format to float
 # - FIXME: Only german date format supported
 # - TODO: Support ISO 8859-15 input/output
 # - TODO: Support CLI arguments
@@ -48,6 +47,7 @@
 
 import csv
 import datetime
+from decimal import *
 
 # CSV input
 inputFile = 'statements-utf-8.csv'
@@ -98,6 +98,9 @@ qifWriter = open(outputFile, 'w')
 # Write header
 qifWriter.write(qifHdr.format(accname = qAccName, acctype = qAccType))
 
+# Set decimal precision
+getcontext().prec = 2
+
 for row in csvReader:
 	if csvReader.line_num <= skipLines:
 		continue
@@ -107,11 +110,12 @@ for row in csvReader:
 	d = datetime.date(int(d[2]), int(d[1]), int(d[0]))
 	date = d.strftime('%m.%d\'%Y')
 	
-	# Convert amount to float (take care to return a float always)
-	amount = float(row[qAmount].replace(thousandsSep, '').replace(decDelim, '.'))
-	
+	# Convert amount to decimal
+	amount = Decimal(row[qAmount].replace(thousandsSep, '').replace(decDelim, '.'))
+
 	# Create qif entry
 	entry = qifTpl.format(date = date, amount = amount, payee = row[qPayee])
+	
 	qifWriter.write(entry)
 
 qifWriter.close()

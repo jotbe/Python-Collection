@@ -45,38 +45,68 @@
 # http://svn.gnucash.org/trac/browser/gnucash/trunk/src/import-export/qif-import/file-format.txt
 #
 
+import argparse
 import csv
 import datetime
 from decimal import *
 
+# Parse args from command-line
+parser = argparse.ArgumentParser(description='Convert a Comma-Separated Value (CSV) to Quicken Interchange Format (QIF)')
+
+parser.add_argument('-i', '--ignore-lines', metavar='LINES', default=1,
+                    help='CSV: Header lines to ignore (default: %(default)r)')
+parser.add_argument('-d', '--delim', metavar='DELIM', default=';',
+                    help='CSV: Records delimiter (default: %(default)r)')
+parser.add_argument('-q', '--quote-char', metavar='QC', default='"',
+                    help='CSV: Character for quoting strings (default: %(default)r)')
+parser.add_argument('--decimal-mark', metavar='MARK', default=',',
+                    help='CSV: Decimal mark (default: %(default)r)')
+parser.add_argument('--thousands-sep', metavar='DELIM', default='.',
+                    help='CSV: Thousands separator (default: %(default)r)')
+parser.add_argument('--col-date', metavar='N', type=int, default=1,
+                    help='CSV: Index of column booking-date (default: %(default)r)')
+parser.add_argument('--col-payee', metavar='N', type=int, default=3,
+                    help='CSV: Index of column payee (default: %(default)r)')
+parser.add_argument('--col-amount', metavar='N', type=int, default=19,
+                    help='CSV: Index of column amount (default: %(default)r)')
+parser.add_argument('input', metavar='CSVFILE', type=file,
+                   help='Source file: /path/to/file.csv')
+parser.add_argument('output', metavar='QIFFILE', type=argparse.FileType('w'),
+                   help='Target file: /path/to/file.qif')
+
+args = parser.parse_args()
+
+
 # CSV input
-inputFile = 'statements-utf-8.csv'
+inputFile = args.input
 # Ignore header lines
-skipLines = 1
+skipLines = args.ignore_lines
 # Delimiter
-delim = ';'
+delim = args.delim
 # Quote character
-quoteChar = '"'
+quoteChar = args.quote_char
 # Decimal separator
 # For input we will not rely on any locales
-decDelim = ','
+decMark = args.decimal_mark
 # Thousands separator
-thousandsSep = '.'
-# QIF account name
+thousandsSep = args.thousands_sep
+# Data type
+qDataType = 'Bank'
+# QIF account name (not used right now)
 qAccName = 'Girokonto'
-# QIF account type
+# QIF account type (not used right now)
 qAccType = 'Cash'
 # Column key (int) for the QIF date
-qDate = 1
+qDate = args.col_date
 # Column key (int) for the QIF payee
-qPayee = 3
+qPayee = args.col_payee
 # Column key (int) for the QIF amount
-qAmount = 19
+qAmount = args.col_amount
 # QIF output
-outputFile = 'statements.qif'
+outputFile = args.output
 # QIF header
-qifHdr = '''!Type:Bank
-'''
+qifHdr = '''!Type:{type}
+'''.format(type=qDataType)
 # QIF template
 qifTpl = '''D{date}
 U{amount}
@@ -85,14 +115,15 @@ P{payee}
 ^
 '''
 
+# Main program
 print '''
 Input: %(in)s
 Output: %(out)s
 
--> Converting to QIF''' % {'in': inputFile, 'out': outputFile}
+-> Converting to QIF''' % {'in': inputFile.name, 'out': outputFile.name}
 
-csvReader = csv.reader(open(inputFile, 'r'), delimiter = delim, quotechar = quoteChar)
-qifWriter = open(outputFile, 'w')
+csvReader = csv.reader(inputFile, delimiter = delim, quotechar = quoteChar)
+qifWriter = outputFile
 
 # Write header
 qifWriter.write(qifHdr.format(accname = qAccName, acctype = qAccType))
@@ -101,21 +132,21 @@ qifWriter.write(qifHdr.format(accname = qAccName, acctype = qAccType))
 getcontext().prec = 2
 
 for row in csvReader:
-	if csvReader.line_num <= skipLines:
-		continue
-	
-	# Convert date
-	d = row[qDate].split('.')
-	d = datetime.date(int(d[2]), int(d[1]), int(d[0]))
-	date = d.strftime('%m.%d\'%Y')
-	
-	# Convert amount to decimal
-	amount = Decimal(row[qAmount].replace(thousandsSep, '').replace(decDelim, '.'))
+    if csvReader.line_num <= skipLines:
+        continue
 
-	# Create qif entry
-	entry = qifTpl.format(date = date, amount = amount, payee = row[qPayee])
-	
-	qifWriter.write(entry)
+    # Convert date
+    d = row[qDate].split('.')
+    d = datetime.date(int(d[2]), int(d[1]), int(d[0]))
+    date = d.strftime('%m.%d\'%Y')
+
+    # Convert amount to decimal
+    amount = Decimal(row[qAmount].replace(thousandsSep, '').replace(decMark, '.'))
+
+    # Create qif entry
+    entry = qifTpl.format(date = date, amount = amount, payee = row[qPayee])
+
+    qifWriter.write(entry)
 
 qifWriter.close()
 

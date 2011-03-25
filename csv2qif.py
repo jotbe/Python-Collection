@@ -19,7 +19,6 @@
 # - FIXME: Only date (D), payee (P) and amount (U, T) are currently supported
 # - FIXME: Only german date format supported
 # - TODO: Support ISO 8859-15 input/output
-# - TODO: Support CLI arguments
 # - TODO: Code refactoring
 #
 # == QIF Format ==

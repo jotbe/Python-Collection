@@ -56,7 +56,7 @@ parser.add_argument('-i', '--ignore-lines', metavar='LINES', default=1,
                     help='CSV: Header lines to ignore (default: %(default)r)')
 parser.add_argument('-d', '--delim', metavar='DELIM', default=';',
                     help='CSV: Records delimiter (default: %(default)r)')
-parser.add_argument('-q', '--quote-char', metavar='QC', default='"',
+parser.add_argument('-q', '--quote-char', metavar='QUOTECHAR', default='"',
                     help='CSV: Character for quoting strings (default: %(default)r)')
 parser.add_argument('--decimal-mark', metavar='MARK', default=',',
                     help='CSV: Decimal mark (default: %(default)r)')

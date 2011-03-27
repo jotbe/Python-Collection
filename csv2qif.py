@@ -18,7 +18,6 @@
 # 
 # - FIXME: Only date (D), payee (P) and amount (U, T) are currently supported
 # - FIXME: Only german date format supported
-# - TODO: Support ISO 8859-15 input/output
 # - TODO: Code refactoring
 #
 # == QIF Format ==
@@ -49,11 +48,19 @@ import csv
 import datetime
 from decimal import *
 
+def to_unicode(obj, encoding='utf-8'):
+    if isinstance(obj, basestring):
+        if not isinstance(obj, unicode):
+            obj = unicode(obj, encoding)
+    return obj
+
 # Parse args from command-line
 parser = argparse.ArgumentParser(description='Convert a Comma-Separated Value (CSV) to Quicken Interchange Format (QIF)')
 
-parser.add_argument('-i', '--ignore-lines', metavar='LINES', default=1,
-                    help='CSV: Header lines to ignore (default: %(default)r)')
+parser.add_argument('-l', '--skip-lines', metavar='LINES', default=1,
+                    help='CSV: Header lines to skip (default: %(default)r)')
+parser.add_argument('-i', '--input-encoding', metavar='ENC', default='ISO8859-15',
+                    help='CSV: Character encoding (default: %(default)r)')
 parser.add_argument('-d', '--delim', metavar='DELIM', default=';',
                     help='CSV: Records delimiter (default: %(default)r)')
 parser.add_argument('-q', '--quote-char', metavar='QUOTECHAR', default='"',
@@ -78,8 +85,10 @@ args = parser.parse_args()
 
 # CSV input
 inputFile = args.input
-# Ignore header lines
-skipLines = args.ignore_lines
+# Input encoding
+inputEncoding = args.input_encoding
+# Skip header lines
+skipLines = args.skip_lines
 # Delimiter
 delim = args.delim
 # Quote character
@@ -104,13 +113,13 @@ qAmount = args.col_amount
 # QIF output
 outputFile = args.output
 # QIF header
-qifHdr = '''!Type:{type}
-'''.format(type=qDataType)
+qifHdr = '''!Type:%(type)s
+''' % {'type': qDataType}
 # QIF template
-qifTpl = '''D{date}
-U{amount}
-T{amount}
-P{payee}
+qifTpl = '''D%(date)s
+U%(amount)s
+T%(amount)s
+P%(payee)s
 ^
 '''
 
@@ -118,8 +127,13 @@ P{payee}
 print '''
 Input: %(in)s
 Output: %(out)s
+Encoding: %(enc)s
 
--> Converting to QIF''' % {'in': inputFile.name, 'out': outputFile.name}
+-> Converting to QIF''' % {
+    'in': inputFile.name, 
+    'out': outputFile.name,
+    'enc': inputEncoding
+}
 
 csvReader = csv.reader(inputFile, delimiter = delim, quotechar = quoteChar)
 qifWriter = outputFile
@@ -141,11 +155,11 @@ for row in csvReader:
 
     # Convert amount to decimal
     amount = Decimal(row[qAmount].replace(thousandsSep, '').replace(decMark, '.'))
+    
+    # Create qif entry    
+    entry = qifTpl % {'date': date, 'amount': amount, 'payee': to_unicode(row[qPayee], inputEncoding)}
 
-    # Create qif entry
-    entry = qifTpl.format(date = date, amount = amount, payee = row[qPayee])
-
-    qifWriter.write(entry)
+    qifWriter.write(entry.encode('utf-8'))
 
 qifWriter.close()
 

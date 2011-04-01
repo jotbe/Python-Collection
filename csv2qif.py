@@ -52,6 +52,7 @@ from decimal import *
 
 if __name__ == '__main__':
     def to_unicode(obj, encoding='utf-8'):
+        """Convert string to unicode."""
         if isinstance(obj, basestring):
             if not isinstance(obj, unicode):
                 obj = unicode(obj, encoding)

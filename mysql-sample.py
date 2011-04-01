@@ -6,7 +6,12 @@ This script is a simple example for accessing a demo MySQL Database
 
 == Use cases ==
 
-- Read some values
+- Connect to the MySQL server
+- Print the MySQL version of the server
+- Drop an existing demo table (should be commented out by default!)
+- Create a demo table
+- Populate dummy data
+- Read dummy data from table
 
 == Prerequisites ==
 
@@ -20,15 +25,6 @@ mysql> CREATE USER 'pyuser'@'localhost' IDENTIFIED by 'pyt3ster';
 
 - Grant rights to user:
 mysql> GRANT ALL ON pytest.* TO 'pyuser'@'localhost';
-
-The script will:
-
-- Connect to the MySQL server
-- Print the MySQL version of the server
-- Drop an existing demo table (commented out by default!)
-- Create a demo table
-- Populate it with some dummy data
-- Read dummy data from table
 
 """
 __author__ = 'Jan Beilicke <dev@jotbe-fx.de>'

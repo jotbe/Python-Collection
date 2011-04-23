@@ -121,11 +121,11 @@ if __name__ == '__main__':
     ''' % {'type': qDataType}
     # QIF template
     qifTpl = '''D%(date)s
-    U%(amount)s
-    T%(amount)s
-    P%(payee)s
-    ^
-    '''
+U%(amount)s
+T%(amount)s
+P%(payee)s
+^
+'''
 
     # Main program
     print '''

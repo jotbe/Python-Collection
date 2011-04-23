@@ -124,8 +124,7 @@ D%(date)s
 U%(amount)s
 T%(amount)s
 P%(payee)s
-^
-'''
+^'''
 
     # Main program
     print '''

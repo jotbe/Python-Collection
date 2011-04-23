@@ -1,4 +1,4 @@
-#!/bin/env python
+#!/usr/bin/env python
 
 """Sample instantiation of db class
 
@@ -29,8 +29,6 @@ import MySQLdb as mdb
 from mysqldb_class_sample import GeneralDBCmd
 
 if __name__ == '__main__':
-    print '__name__: ', __name__
-    
     dbhost = '127.0.0.1'
     dbuser = 'pyuser'
     dbpwd = 'pyt3ster'

@@ -117,10 +117,10 @@ if __name__ == '__main__':
     # QIF output
     outputFile = args.output
     # QIF header
-    qifHdr = '''!Type:%(type)s
-    ''' % {'type': qDataType}
+    qifHdr = '''!Type:%(type)s''' % {'type': qDataType}
     # QIF template
-    qifTpl = '''D%(date)s
+    qifTpl = '''
+D%(date)s
 U%(amount)s
 T%(amount)s
 P%(payee)s

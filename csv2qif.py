@@ -129,11 +129,11 @@ if __name__ == '__main__':
 
     # Main program
     print '''
-    Input: %(in)s
-    Output: %(out)s
-    Encoding: %(enc)s
+Input: %(in)s
+Output: %(out)s
+Encoding: %(enc)s
 
-    -> Converting to QIF''' % {
+-> Converting to QIF''' % {
         'in': inputFile.name, 
         'out': outputFile.name,
         'enc': inputEncoding

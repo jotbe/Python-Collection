@@ -1,35 +1,45 @@
 #!/usr/bin/env python
 
-"""Convert CSV data to QIF
+"""
+Convert CSV data to QIF
+=======================
 
 This script will take a delimiter-separated list
 and converts it to Quicken Interchange Format (QIF).
 
-== Use case == 
+Requirements
+------------
+
+Use case
+--------
 
 Export a bank statement as CSV, convert it to QIF
 and import it into an accounting software like
 eg. GnuCash.
 
-== Caveats and Todos ==
+Caveats and Todos
+-----------------
 
 - FIXME: Only date (D), payee (P) and amount (U, T) are currently supported
 - FIXME: Only german date format supported
 - TODO: Code refactoring
 
-== QIF Format ==
+QIF Format
+----------
 
-!Type:Bank
-Dmm.dd'YYYY
-U-123.45
-T-123.45
-PPayee
-^
-Ddd.mm'YYYY
-U-456.78
-T-456.78
-PPayee
-^
+::
+
+    !Type:Bank
+    Dmm.dd'YYYY
+    U-123.45
+    T-123.45
+    PPayee
+    ^
+    Ddd.mm'YYYY
+    U-456.78
+    T-456.78
+    PPayee
+    ^
 
 Note the caret (^) at the end of each entry
 
@@ -48,7 +58,6 @@ import argparse
 import csv
 import datetime
 from decimal import *
-
 
 if __name__ == '__main__':
     def to_unicode(obj, encoding='utf-8'):
@@ -85,7 +94,6 @@ if __name__ == '__main__':
                        help='Target file: /path/to/file.qif')
 
     args = parser.parse_args()
-
 
     # CSV input
     inputFile = args.input
@@ -133,16 +141,16 @@ Output: %(out)s
 Encoding: %(enc)s
 
 -> Converting to QIF''' % {
-        'in': inputFile.name, 
+        'in': inputFile.name,
         'out': outputFile.name,
         'enc': inputEncoding
     }
 
-    csvReader = csv.reader(inputFile, delimiter = delim, quotechar = quoteChar)
+    csvReader = csv.reader(inputFile, delimiter=delim, quotechar=quoteChar)
     qifWriter = outputFile
 
     # Write header
-    qifWriter.write(qifHdr.format(accname = qAccName, acctype = qAccType))
+    qifWriter.write(qifHdr.format(accname=qAccName, acctype=qAccType))
 
     # Set decimal precision
     getcontext().prec = 2
@@ -158,11 +166,11 @@ Encoding: %(enc)s
 
         # Convert amount to decimal
         amount = Decimal(row[qAmount].replace(thousandsSep, '').replace(decMark, '.'))
-    
-        # Create qif entry    
+
+        # Create qif entry
         entry = qifTpl % {
-            'date': date, 
-            'amount': amount, 
+            'date': date,
+            'amount': amount,
             'payee': to_unicode(row[qPayee], inputEncoding)
         }
 

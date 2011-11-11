@@ -42,14 +42,14 @@ skip_bridge
 max_knights = 15
     """
 
-    config = ConfigParser.RawConfigParser(allow_no_value = True)
+    config = ConfigParser.RawConfigParser(allow_no_value=True)
 
     #config.read(confFile)
     config.readfp(io.BytesIO(conf))
     """Read the config
     Invert the comments of the two lines above if you want to read
     from confFile
-    
+
     """
 
     print config.get('global', 'eggs').split(',')

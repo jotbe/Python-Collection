@@ -39,14 +39,14 @@ if __name__ == '__main__':
 
     q = GeneralDBCmd(c, tbl)
     q.debug = True
-    
+
     print dir(q)
     print 'MySQL-Version: %s' % q.get_mysql_version()
 
     print 'Querying field 1 of row 1 \'q[1][1]\': ', q[1][1]
 
-    for x in xrange(0,2):
+    for x in xrange(0, 2):
         print 'Name (range) #%s: %s' % (x, q[x][1])
-    
+
     for x in q:
         print 'Name: %s' % (x[1],)

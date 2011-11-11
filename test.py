@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # Just a simple test script
-import re
+#import re
 
 #print '\nPattern matching:'
 #m = re.search('(?i)foo', 'blaFoobar')
@@ -10,19 +10,19 @@ import re
 #print '1 + 2 =', 1+2
 
 print '\nLists:'
-a = [1,7,4,2,1,5,3]
+a = [1, 7, 4, 2, 1, 5, 3]
 #for i in a:
 #  print i
 #print 'end'
 
 a.reverse()
 for i in a:
-	print i
+    print i
 print '.'
 
 a.sort()
 for i in a:
-	print i
+    print i
 print '.'
 
 print 'Items before:', len(a)
@@ -34,20 +34,22 @@ print 'Values within keys 2-5 (excl.):', a[2:5]
 print a.pop(1)
 print '.'
 
-b=(6,8)
+b = (6, 8)
 a.extend(b)
 a.sort()
 
 for i in a:
-	print i
+    print i
 print '.'
 
 print '-----------'
+
+
 def bla():
-	return
+    return
 
 foo = bla()
 
 for i in foo:
-	print i
+    print i
 print '.'

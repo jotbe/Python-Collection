@@ -32,14 +32,13 @@ __date__ = '2011-03-31'
 
 import MySQLdb as mdb
 import sys
-import os
 
 if __name__ == '__main__':
     dbhost = '127.0.0.1'
     dbuser = 'pyuser'
     dbpwd = 'pyt3ster'
     db = 'pytest'
-    
+
     try:
         #c = mdb.connect(dbhost, dbuser, db, read_default_file=os.path.expanduser('~/my.cnf'))
         c = mdb.connect(dbhost, dbuser, dbpwd, db)
@@ -85,7 +84,6 @@ if __name__ == '__main__':
             print 'Error %d: %s' % (e.args[0], e.args[1])
             sys.exit()
 
-
     def populate_demo_table():
         """Populate a demo table with dummy data."""
         try:
@@ -102,7 +100,6 @@ if __name__ == '__main__':
             c.rollback()
             print 'Error %d: %s' % (e.args[0], e.args[1])
             sys.exit()
-
 
     def get_all_demo_data():
         """Select and return all dummy data of the demo table."""
@@ -127,7 +124,7 @@ if __name__ == '__main__':
         except mdb.Error, e:
             print 'Error %d: %s' % (e.args[0], e.args[1])
             sys.exit()
-        
+
     version = get_mysql_version()
     print 'MySQL-Version: %s' % version
 

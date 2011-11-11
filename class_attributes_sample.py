@@ -10,7 +10,7 @@ __date__ = '2011-04-01'
 
 import class_sample
 
-if __name__ == '__main__':    
+if __name__ == '__main__':
     print dir(class_sample)
 
     # SampleCounter

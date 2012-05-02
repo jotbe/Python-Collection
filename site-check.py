@@ -20,7 +20,7 @@ from datetime import timedelta
 if __name__ == '__main__':
     update_logfile = 'site-check.log'
     url = 'http://blog.jotbe-fx.de'
-    search_str = 'Donnerstag'
+    search_str = 'privacy'
 
     send_mail = False
     smtp_server = 'localhost'
@@ -79,7 +79,7 @@ Have a nice day!
                 s.quit()
 
             fp = open(update_logfile, 'w')
-            fp.write(today.strftime('%Y-%m-%d %H:%M:%S'))
+            fp.write(';'.join([today.strftime('%Y-%m-%d %H:%M:%S'), search_str]))
         else:
             print('Not found')
     else:

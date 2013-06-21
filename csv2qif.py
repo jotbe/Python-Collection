@@ -70,7 +70,7 @@ if __name__ == '__main__':
     # Parse args from command-line
     parser = argparse.ArgumentParser(description='Convert a Comma-Separated Value (CSV) to Quicken Interchange Format (QIF)')
 
-    parser.add_argument('-l', '--skip-lines', metavar='LINES', default=1,
+    parser.add_argument('-l', '--skip-lines', metavar='LINES', type=int, default=1,
                         help='CSV: Header lines to skip (default: %(default)r)')
     parser.add_argument('-i', '--input-encoding', metavar='ENC', default='ISO8859-15',
                         help='CSV: Character encoding (default: %(default)r)')
